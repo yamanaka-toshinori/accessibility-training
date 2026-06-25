@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アクセシビリティ研修プログラム — アソビュー！</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "rgb(228, 228, 231)",         // zinc-200
+                        input: "rgb(228, 228, 231)",          // zinc-200
+                        ring: "rgb(79, 70, 229)",              // indigo-600
+                        background: "rgb(255, 255, 255)",      // white
+                        foreground: "rgb(9, 9, 11)",           // zinc-950
+                        primary: {
+                            DEFAULT: "rgb(9, 9, 11)",          // zinc-950
+                            foreground: "rgb(250, 250, 250)",  // zinc-50
+                        },
+                        secondary: {
+                            DEFAULT: "rgb(244, 244, 245)",     // zinc-100
+                            foreground: "rgb(9, 9, 11)",       // zinc-950
+                        },
+                        muted: {
+                            DEFAULT: "rgb(244, 244, 245)",      // zinc-100
+                            foreground: "rgb(113, 113, 122)",  // zinc-500
+                        },
+                        accent: {
+                            DEFAULT: "rgb(244, 244, 245)",     // zinc-100
+                            foreground: "rgb(9, 9, 11)",       // zinc-950
+                        },
+                        card: {
+                            DEFAULT: "rgb(255, 255, 255)",
+                            foreground: "rgb(9, 9, 11)",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "0.75rem",
+                        md: "calc(0.75rem - 2px)",
+                        sm: "calc(0.75rem - 4px)",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: rgb(250, 250, 250);
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.03) 0px, transparent 50%);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground min-h-screen flex flex-col antialiased">
+    <div class="bg-pattern"></div>
+
+    <!-- ヘッダー -->
+    <header class="bg-white border-b border-border sticky top-0 z-50 shadow-[0_1px_2px_rgba(0,0,0,0.02)] h-[49px]">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
+                <h1 id="header-title" class="text-xs sm:text-sm font-bold tracking-tight text-foreground select-none cursor-pointer" onclick="backToHubHome()">
+                    アクセシビリティ研修プログラム
+                </h1>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span id="preview-badge" class="text-[9px] font-bold text-indigo-600 px-2 py-0.5 border border-indigo-200 bg-indigo-50/50 rounded hidden sm:inline-block">Google Drive URL Mode Active</span>
+                <button onclick="backToHubHome()" id="nav-home-btn" class="text-[10px] sm:text-xs bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold px-2.5 py-1.5 rounded-md transition-colors cursor-pointer hidden">
+                    ハブHomeに戻る
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-5xl w-full mx-auto px-4 pt-6 sm:pt-12 pb-16 flex flex-col justify-start">
+
+        <!-- 0. チャプター選択ハブ画面 (Home) -->
+        <div id="chapter-select" class="bg-card rounded-xl border border-border p-4 sm:p-10 shadow-sm fade-in">
+            <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+                <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground mb-2 sm:mb-3">
+                    アクセシビリティ研修
+                </h2>
+                <p class="text-muted-foreground text-xs sm:text-base leading-relaxed">
+                    すべてのゲストが、あらゆる利用環境においてスムーズに目的を達成できる未来をつくる。
+                </p>
+            </div>
+
+            <!-- チャプターグリッド (1行3枚ずつ美しく2行に整列) -->
+            <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3 mb-10 sm:mb-12" id="chapter-grid">
+                <!-- JSで動的に構築されます -->
+            </div>
+
+            <!-- 📚 推薦学習リソース集 -->
+            <div class="border-t border-border pt-8 sm:pt-10" id="resource-section">
+                <!-- JSで動的に構築されます -->
+            </div>
+        </div>
+
+        <!-- 【Previewシミュレータ】 1. 講義フェーズエリア -->
+        <div id="learning-phase" class="bg-card rounded-xl border border-border p-4 sm:p-10 shadow-sm fade-in hidden">
+            <div id="learning-content"></div>
+            <!-- クイズ開始ボタン -->
+            <div class="mt-10 pt-6 border-t border-border text-center">
+                <button onclick="startQuizSim()" class="inline-flex items-center justify-center space-x-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 sm:px-8 py-3.5 rounded-md shadow-sm transition-colors cursor-pointer text-xs sm:text-sm w-full sm:w-auto">
+                    <span>理解度クイズに挑戦する (全30問)</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 【Previewシミュレータ】 2. クイズプレイフェーズ -->
+        <div id="quiz-phase" class="bg-card rounded-xl border border-border p-4 sm:p-8 shadow-sm hidden fade-in min-h-[550px] sm:min-h-[670px] flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between text-[11px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 font-medium tracking-tight">
+                    <span id="question-index" class="uppercase">第 1 問 / 30 問中</span>
+                    <span id="current-score-text">正答数: 0</span>
+                </div>
+                <div class="w-full bg-secondary h-1.5 rounded-full mb-4 sm:mb-6 overflow-hidden">
+                    <div id="progress-bar" class="bg-primary h-full rounded-full transition-all duration-300" style="width: 3.3%;"></div>
+                </div>
+            </div>
+
+            <div class="flex-grow flex flex-col justify-start">
+                <div class="inline-block bg-secondary text-secondary-foreground text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded mb-2 sm:mb-3 w-fit" id="question-tag">
+                    テーマ
+                </div>
+                <h3 class="text-sm sm:text-lg font-bold text-foreground leading-snug mb-4 sm:mb-6" id="question-text">
+                    ここに問題文が挿入されます。
+                </h3>
+
+                <!-- 等価選択肢コンテナ -->
+                <div class="grid gap-2.5 mb-4 sm:mb-6" id="options-container">
+                    <!-- ボタンが動的挿入 -->
+                </div>
+
+                <!-- 解説表示エリア -->
+                <div id="feedback-box" class="mt-2 p-3 sm:p-4 rounded-lg border hidden fade-in">
+                    <div class="flex items-start space-x-2 sm:space-x-3 text-left">
+                        <div class="mt-0.5 flex-shrink-0">
+                            <svg id="feedback-icon" class="w-4 h-4 sm:w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm mb-1" id="feedback-title">結果タイトル</h4>
+                            <p class="text-[11px] sm:text-sm leading-relaxed text-slate-700" id="feedback-rationale">ここに解説テキストが挿入されます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 下部：次へボタン -->
+            <div class="mt-4 sm:mt-6 border-t border-border pt-4 min-h-[52px]">
+                <button id="next-btn" onclick="nextQuestionSim()" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-4 rounded-md transition-colors hidden flex items-center justify-center space-x-2 cursor-pointer text-xs sm:text-sm">
+                    <span>次の問題へ進む</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 【Previewシミュレータ】 3. 結果画面フェーズ -->
+        <div id="result-phase" class="bg-card rounded-xl border border-border p-6 sm:p-12 text-center hidden fade-in shadow-sm">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-secondary text-primary flex items-center justify-center rounded-full mx-auto mb-4 sm:mb-6">
+                <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+
+            <h2 class="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight mb-1 sm:mb-2" id="result-header">研修クイズ完了</h2>
+            <p class="text-muted-foreground text-xs sm:text-sm mb-6 sm:mb-8" id="result-subheader">すばらしい！すべての講義とクイズをクリアしました。</p>
+
+            <div class="bg-secondary/50 border border-border rounded-xl p-4 sm:p-6 max-w-xs sm:max-w-sm mx-auto mb-6 sm:mb-8">
+                <span class="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1">あなたの正答率</span>
+                <span class="text-4xl font-black text-foreground" id="final-score"></span>
+                <span class="text-[11px] sm:text-xs text-muted-foreground block mt-1.5 sm:mt-2 font-semibold" id="score-rank"></span>
+            </div>
+
+            <div class="max-w-md mx-auto text-slate-700 text-xs sm:text-sm leading-relaxed text-left bg-secondary border-l-4 border-primary p-4 rounded-r-md mb-6 sm:mb-8">
+                <p id="result-message"></p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-2 max-w-md mx-auto">
+                <button onclick="backToHubHome()" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 rounded-md transition-colors text-xs sm:text-sm cursor-pointer">
+                    チャプター選択へ戻る
+                </button>
+                <button onclick="restartQuizSimOnly()" class="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border font-semibold py-2.5 rounded-md transition-colors text-xs sm:text-sm cursor-pointer">
+                    もう一度挑戦する
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // 🛠️ 【管理者向け設定】Googleドライブの共有URL一括管理エリア
+        // ------------------------------------------
+        // Googleドライブで各チャプター（ch1〜ch6）のファイル個別URLを発行したら、
+        // 以下の空文字 "" の中にそれぞれのURLをそのまま貼り付けて保存してください。
+        // ※URLが設定されていない場合は、自動的にデバッグシミュレーターが作動します。
+        // ==========================================
+        const CONFIG = {
+            ch1Url: "", // Chapter 1 のGoogleドライブ共有URL
+            ch2Url: "", // Chapter 2 のGoogleドライブ共有URL
+            ch3Url: "", // Chapter 3 のGoogleドライブ共有URL
+            ch4Url: "", // Chapter 4 のGoogleドライブ共有URL
+            ch5Url: "", // Chapter 5 のGoogleドライブ共有URL
+            ch6Url: "", // Chapter 6 のGoogleドライブ共有URL
+        };
+
+        const chaptersData = [
+            { id: 1, numLabel: "Chapter 01", file: "asoview-accessibility-ch1.html", badge: "マインド編", title: "ウェブの思想と5つの不自由さ", description: "「アクセシビリティ＝特定の人のため」という誤解を解き、お出かけの現場で誰もが直面する一時的な不自由からマインドを学びます。（全30問）" },
+            { id: 2, numLabel: "Chapter 02", file: "asoview-accessibility-ch2.html", badge: "実践・基礎編", title: "全員で覚えてほしい情報のバリアフリー", description: "企画、デザイン、マーケ、CS等、全員が明日から使えるアクセシビリティの基本ルール。文字、色、言葉の配慮を学びます。（全30問）" },
+            { id: 3, numLabel: "Chapter 03", file: "asoview-accessibility-ch3.html", badge: "役割・思想編", title: "職種別の役割と合理的配慮", description: "2024年の合理的配慮の義務化、およびFigmaや仕様設計で必須となる「セマンティクス」や「WAI-ARIA」の思想を学びます。（全30問）" },
+            { id: 4, numLabel: "Chapter 04", file: "asoview-accessibility-ch4.html", badge: "実装技術編", title: "堅牢なマークアップとWAI-ARIA", description: "エンジニア特化。キーボードアクセス、モーダルのフォーカストラップ、背面スクロールロック、動的WAI-ARIA属性等の実装を学びます。（全30問）" },
+            { id: 5, numLabel: "Chapter 05", file: "asoview-accessibility-ch5.html", badge: "検証・評価編", title: "検証・テストと品質アシュアランス", description: "自動ツールの限界を知り、VoiceOver/TalkBack実機テスト、JIS規格適合試験等の科学的評価プロセスを学びます。（全30問）" },
+            { id: 6, numLabel: "Chapter 06", file: "asoview-accessibility-ch6.html", badge: "未来のUX編", title: "AIエージェント時代のセマンティクス", description: "AIがWebを自律操作する時代、構造の正しさ。マシン可読性（AEO）とビジネス優位性に直結する未来のUXを学びます。（全30問）" }
+        ];
+
+        const resources = [
+            {
+                cat: "カテゴリ1：セマンティックHTML（正しい構造で組む理由）",
+                items: [
+                    { title: "1. セマンティックタグの理解：アクセシビリティー、SEO最適化", url: "https://zenn.dev/bellstone/articles/3fbbe21d1b260e", reason: "セマンティックタグ、アクセシビリティ、SEOの繋がりが分かりやすくまとまっています。ブラウザが内部で「Accessibility tree」を構築して読み上げに伝えている仕組みなどを学習できます。" },
+                    { title: "2. HTMLのセマンティクス（意味論）とは？適切な要素を使う大切さ", url: "https://www.bring-flower.com/blog/html-semantics-elements/", reason: "「divやspanだけで画面を組むと何が起きるのか」が明確に書かれています。ブラウザや検索エンジンがHTMLの構造をどう解釈しているかを学ぶ、最初の1歩に最適な記事です。" }
+                ]
+            }
+        ];
+
+        // 🔗 Googleドライブ共有対応のナビゲーションハンドラー
+        function navigateToChapter(chapterId, fallbackFile) {
+            const configKey = 'ch' + chapterId + 'Url';
+            const targetUrl = CONFIG[configKey];
+
+            // 1. Googleドライブの個別共有URLが設定されている場合、そのURLへ直接遷移
+            if (targetUrl && targetUrl.trim() !== "") {
+                window.location.href = targetUrl;
+            } else {
+                // 2. 設定されていない場合、Preview環境テスト用のシミュレーターを起動
+                triggerPreviewSimulator(fallbackFile);
+            }
+        }
+
+        // --- 🧪 Preview環境でのデバッグ用シミュレータコード ---
+        let currentIdx = 0, score = 0, isAnswered = false, activeQuizList = [];
+        
+        const simChapterContents = {
+            "ch1": `
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-muted-foreground font-bold text-xs tracking-widest uppercase block mb-1">Chapter 01 (マインド編)</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight mb-2">ウェブの思想と5つの不自由さ</h2>
+                    <p class="text-muted-foreground text-[11px] sm:text-sm leading-relaxed">お出かけ現場におけるリアルな制限から、バリアフリーマインドを学びます。</p>
+                </div>
+                <div class="space-y-6 sm:space-y-8 text-foreground leading-relaxed max-w-3xl mx-auto text-xs sm:text-sm border-t border-border pt-6">
+                    <p class="text-slate-600 leading-relaxed">※プレビューデバッグモード：Chapter 1 の講義と30問のクイズをその場で実行します。<br>管理者がGoogleドライブ共有URLを設定すると、社員利用時は本番用ファイルに完全に遷移します。</p>
+                </div>
+            `,
+            "ch2": `
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-muted-foreground font-bold text-xs tracking-widest uppercase block mb-1">Chapter 02 (実践・基礎編)</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight mb-2">全員で覚えてほしい情報のバリアフリー</h2>
+                    <p class="text-muted-foreground text-[11px] sm:text-sm leading-relaxed">色や文字、言葉の配慮を、全員共通の基礎知識として学びます。</p>
+                </div>
+                <div class="space-y-6 sm:space-y-8 text-foreground leading-relaxed max-w-3xl mx-auto text-xs sm:text-sm border-t border-border pt-6">
+                    <p class="text-slate-600 leading-relaxed">※プレビューデバッグモード：Chapter 2 の講義と30問のクイズをその場で実行します。<br>管理者がGoogleドライブ共有URLを設定すると、社員利用時は本番用ファイルに完全に遷移します。</p>
+                </div>
+            `,
+            "ch3": `
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-muted-foreground font-bold text-xs tracking-widest uppercase block mb-1">Chapter 03 (役割・思想編)</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight mb-2">職種別の役割と合理的配慮</h2>
+                    <p class="text-muted-foreground text-[11px] sm:text-sm leading-relaxed">合理的配慮の義務化、ボタンとリンクの意味論的区別を学びます。</p>
+                </div>
+                <div class="space-y-6 sm:space-y-8 text-foreground leading-relaxed max-w-3xl mx-auto text-xs sm:text-sm border-t border-border pt-6">
+                    <p class="text-slate-600 leading-relaxed">※プレビューデバッグモード：Chapter 3 の講義と30問のクイズをその場で実行します。<br>管理者がGoogleドライブ共有URLを設定すると、社員利用時は本番用ファイルに完全に遷移します。</p>
+                </div>
+            `
+        };
+
+        const simQuizDatabase = {
+            1: [
+                { tag: 'ウェブの本質', q: 'ウェブが生まれた最も根本的な目的として、正しいものはどれですか？', opts: ['最新の端末を所持する特定の人を優遇する仕様', '高度な操作ができるプロを満足させる仕様', '環境を問わず誰もが対等に利用できる仕様', '企業の利益率を最大化させるために組む仕様'], ans: 2, note: '普遍的なアクセスを保証することがウェブの原点です。' },
+                { tag: '精神的不自由', q: '後ろに行列ができてゲストが極度に焦っているとき、避けるべき設計はどれですか？', opts: ['1タップで情報が呼び出せる自動ログイン', '画面の遷移途中に全画面の広告を挟む仕様', '目立つ位置に配置された大きな決定ボタン', '通信量を抑えて即座に描画する軽量な画面'], ans: 1, note: '焦り環境下での不要な情報の割り込みは、認子的パニックを増幅させるからです。' }
+            ],
+            2: [
+                { tag: '色覚の不自由', q: '入力フォームでエラーが発生した際、「枠線を赤色にするだけ」のデザインが不十分とされる最大の理由はどれですか？', opts: ['赤色はシステム負荷が高くページのロードを下げるから', '多くの人にとって赤色は単なるお洒落な装飾に感じるから', '色覚多様性のゲストや直射日光下では識別不能になるから', '赤色の多用はスマートフォンの液晶に焼き付きを起こすから'], ans: 2, note: '色だけで状態を伝えると、色覚多様性のゲストや太陽光下で見落とすからです。' },
+                { tag: '代替テキスト画像', q: 'テキスト情報を用意せず「文字情報がすべて埋め込まれた告知画像」をそのまま掲載する際に発生するバリアはどれですか？', opts: ['告知バナーのファイル容量が大きくなりサーバー費用が増えるバグ', '音声ガイドが読めず翻訳ツールも効かず機械可読性が全滅するバグ', '画像内の文字をゲストが指でなぞると画面から勝手に消え去るバグ', '画像をそのまま表示すると端末が深刻なウイルスに感染しやすくなる'], ans: 1, note: '画像の中の文字はスクリーンリーダーにただの色の塊にしか見えません。' }
+            ],
+            3: [
+                { tag: '環境の整備と配慮', q: '合理的配慮と、あらかじめバリアを減らす「環境の整備」の違いとして、正しい説明はどれですか？', opts: ['合理的配慮だけを行えばよく環境の整備は完全に廃止してよい仕様', '事前にバリアを減らすのが整備で個別の対話対応が合理的配慮の仕様', 'すべてのシステムを完璧にしなければ即座に営業停止処分になる仕様', '配慮はウィジェットを入れるだけで個別の対話なしで提供される仕様'], ans: 1, note: '事前の環境整備があるほど、個別対話CS対応コストを削減できるからです。' },
+                { tag: '建設的対話の義務', q: '合理的配慮を求めるゲストから「画面操作が完了できないため、代行予約を手伝ってほしい」と申し出があった際、避けるべき不適切な対応はどれですか？', opts: ['社内の利用セキュリティルールを最優先して一律でお手伝いをお断りする対応', 'メールや問い合わせフォーム等を用いた代行手続きなど代替の手段を提案する対応', '個別の対話によるアシストを行い、発生したバリアの事実を開発チームに共有する', 'ゲストの安全やプライバシーに最大限 of 配慮を払いながら代理で手続きを行う対応'], ans: 0, note: '一方的なルールの押しつけや拒絶は法律で禁止されています。' }
+            ]
+        };
+
+        function triggerPreviewSimulator(fileName) {
+            let chNum = 1;
+            if (fileName.includes("ch2")) chNum = 2;
+            if (fileName.includes("ch3")) chNum = 3;
+            
+            currentChapter = chNum;
+            activeQuizList = simQuizDatabase[chNum] || simQuizDatabase[1];
+
+            document.getElementById("chapter-select").classList.add("hidden");
+            document.getElementById("learning-phase").classList.remove("hidden");
+            document.getElementById("nav-home-btn").classList.remove("hidden");
+            
+            document.getElementById("learning-content").innerHTML = simChapterContents["ch" + chNum] || simChapterContents["ch1"];
+            
+            const headerTitle = document.getElementById("header-title");
+            if (headerTitle) {
+                headerTitle.innerText = `Chapter 0${chNum} (Preview Debug Mode)`;
+            }
+            
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function startQuizSim() {
+            document.getElementById("learning-phase").classList.add("hidden");
+            document.getElementById("quiz-phase").classList.remove("hidden");
+            currentIdx = 0;
+            score = 0;
+            loadQuestionSim();
+        }
+
+        function loadQuestionSim() {
+            isAnswered = false;
+            const qBox = activeQuizList[currentIdx];
+            const total = activeQuizList.length;
+
+            document.getElementById("question-index").innerText = `第 ${currentIdx + 1} 問 / ${total} 問中 (デバッグ用)`;
+            document.getElementById("current-score-text").innerText = `正答数: ${score}`;
+            document.getElementById("progress-bar").style.width = `${((currentIdx + 1) / total) * 100}%`;
+            document.getElementById("question-tag").innerText = qBox.tag;
+            document.getElementById("question-text").innerText = qBox.q;
+
+            currentShuffledOpts = qBox.opts.map((opt, i) => ({ text: opt, isCorrect: i === qBox.ans }));
+            for (let i = currentShuffledOpts.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentShuffledOpts[i], currentShuffledOpts[j]] = [currentShuffledOpts[j], currentShuffledOpts[i]];
+            }
+
+            const container = document.getElementById("options-container"); 
+            container.innerHTML = "";
+            currentShuffledOpts.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-item text-left w-full p-3 sm:p-4 rounded-lg border border-border bg-white text-xs sm:text-sm font-medium hover:bg-secondary transition-all cursor-pointer focus:outline-none";
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOptionSim(idx);
+                container.appendChild(btn);
+            });
+            document.getElementById("feedback-box").classList.add("hidden");
+            document.getElementById("next-btn").classList.add("hidden");
+        }
+
+        function selectOptionSim(idx) {
+            if (isAnswered) return;
+            isAnswered = true;
+            const btns = document.getElementsByClassName("option-item");
+            const qBox = activeQuizList[currentIdx];
+
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].disabled = true;
+                if (currentShuffledOpts[i].isCorrect) {
+                    btns[i].className += " bg-emerald-50/50 border-emerald-500 text-emerald-900 font-semibold";
+                }
+            }
+
+            const correct = currentShuffledOpts[idx].isCorrect;
+            if (correct) score++;
+            else btns[idx].className += " bg-rose-50/50 border-rose-400 text-rose-900";
+
+            const feedback = document.getElementById("feedback-box");
+            feedback.className = `mt-4 p-3 sm:p-4 rounded-lg border ${correct ? 'bg-emerald-50/50 border-emerald-500 text-emerald-900' : 'bg-rose-50/50 border-rose-400 text-rose-900'} fade-in text-left`;
+            document.getElementById("feedback-title").innerText = correct ? "正解です" : "不正解です";
+            
+            const iconSvg = document.getElementById("feedback-icon");
+            iconSvg.innerHTML = correct ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>';
+            iconSvg.className = `w-4 h-4 sm:w-5 h-5 ${correct ? 'text-emerald-600' : 'text-rose-600'}`;
+
+            document.getElementById("feedback-rationale").innerHTML = qBox.note;
+            feedback.classList.remove("hidden");
+            document.getElementById("next-btn").classList.remove("hidden");
+        }
+
+        function nextQuestionSim() {
+            if (++currentIdx < activeQuizList.length) {
+                loadQuestionSim();
+            } else {
+                showResultSim();
+            }
+        }
+
+        function showResultSim() {
+            document.getElementById("quiz-phase").classList.add("hidden");
+            document.getElementById("result-phase").classList.remove("hidden");
+            document.getElementById("final-score").innerText = `${score} / ${activeQuizList.length}`;
+            
+            const rankSpan = document.getElementById("score-rank");
+            const msgP = document.getElementById("result-message");
+
+            rankSpan.innerText = "ランク：体験設計推進メンバー 🌱";
+            msgP.innerText = "※プレビューデバッグモードにおける簡易テスト完了。実際の30問完全版は、アップロード後の各チャプター個別ファイルで起動します。";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function restartQuizSimOnly() {
+            document.getElementById("result-phase").classList.add("hidden");
+            startQuizSim();
+        }
+
+        function backToHubHome() {
+            document.getElementById("chapter-select").classList.remove("hidden");
+            ["learning-phase", "quiz-phase", "result-phase"].forEach(id => document.getElementById(id).classList.add("hidden"));
+            document.getElementById("nav-home-btn").classList.add("hidden");
+            
+            const headerTitle = document.getElementById("header-title");
+            if (headerTitle) {
+                headerTitle.innerText = "アクセシビリティ研修プログラム";
+            }
+            
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        // --- 🧪 ---
+
+        function renderChapterGrid() {
+            const grid = document.getElementById("chapter-grid"); 
+            grid.innerHTML = "";
+            chaptersData.forEach(c => {
+                const card = document.createElement("div");
+                card.className = "border border-border rounded-xl p-6 bg-white hover:shadow-md hover:border-indigo-300 transition-all flex flex-col justify-between group shadow-sm shadow-indigo-500/5";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-secondary text-secondary-foreground text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md tracking-wider">${c.numLabel}</span>
+                            <span class="text-[10px] sm:text-xs text-muted-foreground font-medium">${c.badge}</span>
+                        </div>
+                        <h3 class="text-base sm:text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors">${c.title}</h3>
+                        <p class="text-muted-foreground text-xs leading-relaxed mb-6">${c.description}</p>
+                    </div>
+                    <button onclick="navigateToChapter(${c.id}, '${c.file}')" class="w-full bg-primary hover:bg-primary/95 text-primary-foreground font-semibold py-2.5 rounded-md transition-colors text-xs sm:text-sm text-center block cursor-pointer">
+                        講義をはじめる
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderResources() {
+            const section = document.getElementById("resource-section");
+            section.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-base sm:text-lg font-bold text-foreground tracking-tight">📚 推薦学習リソース</h3>
+                    <p class="text-xs text-muted-foreground mt-1">アクセシビリティをさらに深く学ぶための、全メンバー必読の解説リンク集です。</p>
+                </div>
+            `;
+            const container = document.createElement("div"); 
+            container.className = "space-y-6";
+            
+            resources.forEach(r => {
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center space-x-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                        <span>${r.cat}</span>
+                    </h4>
+                    <div class="grid gap-3 grid-cols-1 sm:grid-cols-2">
+                        ${r.items.map(item => `
+                            <a href="${item.url}" target="_blank" rel="noopener" class="block p-4 rounded-lg border border-border bg-white hover:bg-secondary/40 transition-all group">
+                                <span class="text-xs font-bold block mb-1 underline text-foreground group-hover:text-indigo-600 transition-colors">${item.title}</span>
+                                <span class="text-[10px] sm:text-[11px] text-muted-foreground leading-relaxed block">${item.reason}</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            section.appendChild(container);
+        }
+
+        renderChapterGrid();
+        renderResources();
+    </script>
+</body>
+</html>
